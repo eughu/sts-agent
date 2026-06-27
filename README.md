@@ -31,24 +31,38 @@
 
 ## Windows 安装
 
-1. 安装 Python 3.10 或更新版本：
+1. 安装 Python 3.10 或更新版本。Python 3.9 不够用。
    - 推荐从 <https://www.python.org/downloads/windows/> 安装。
    - 安装时勾选 `Add python.exe to PATH`。
+   - 安装后用下面命令确认 `py` 能看到 3.10+：
+
+   ```powershell
+   py -0p
+   ```
+
+   如果电脑上同时有 Python 3.9 和 3.10/3.11/3.12，后续命令建议显式使用 `py -3.12` 或 `py -3.11`。
 
 2. 克隆仓库：
 
    ```powershell
-   git clone <你的 GitHub 仓库地址>
+   git clone https://github.com/eughu/sts-agent.git
    cd sts-agent
    ```
 
-3. 创建虚拟环境并安装：
+3. 创建虚拟环境并安装。推荐使用 PowerShell：
 
    ```powershell
-   py -m venv .venv
+   py -3.12 -m venv .venv
    .\.venv\Scripts\Activate.ps1
-   py -m pip install --upgrade pip
-   py -m pip install -e .
+   python -m pip install -e .
+   ```
+
+   如果你用的是 cmd，不要运行 `Set-ExecutionPolicy`，改用：
+
+   ```cmd
+   py -3.12 -m venv .venv
+   .venv\Scripts\activate.bat
+   python -m pip install -e .
    ```
 
 4. 验证命令可用：
@@ -62,6 +76,56 @@
 
 ```powershell
 Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+```
+
+### Windows 常见安装问题
+
+如果看到：
+
+```text
+Defaulting to user installation because normal site-packages is not writeable
+```
+
+通常说明你没有激活虚拟环境。先运行：
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+如果你在 cmd 里，运行：
+
+```cmd
+.venv\Scripts\activate.bat
+```
+
+如果看到清华 PyPI 镜像 403：
+
+```text
+HTTP error 403 while getting https://pypi.tuna.tsinghua.edu.cn/...
+```
+
+本项目没有第三方运行依赖，可以先跳过 `pip install --upgrade pip`，直接运行：
+
+```powershell
+python -m pip install -e .
+```
+
+如果必须升级 pip，可以临时使用官方源：
+
+```powershell
+python -m pip install --upgrade pip -i https://pypi.org/simple
+```
+
+如果看到：
+
+```text
+Python39
+```
+
+说明当前 `py` 指到 Python 3.9。请安装 Python 3.10+，然后用：
+
+```powershell
+py -3.12 -m venv .venv
 ```
 
 ## 使用示例
