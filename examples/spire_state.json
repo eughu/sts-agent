@@ -1,0 +1,43 @@
+{
+  "state": {
+    "character": "ironclad",
+    "act": "act1",
+    "floor": 5,
+    "hp": 60,
+    "max_hp": 80,
+    "gold": 120,
+    "deck": ["Strike", "Strike", "Defend", "Defend", "Bash", "Shrug It Off"],
+    "relics": ["Burning Blood"],
+    "potions": ["Fire Potion"],
+    "boss": "Slime Boss",
+    "next_elite": "Gremlin Nob",
+    "ascension": 10,
+    "notes": "Edit this file while the web panel is running; recommendations refresh automatically."
+  },
+  "decisions": [
+    {
+      "topic": "card",
+      "options": [
+        { "name": "Cleave" },
+        { "name": "Demon Form" },
+        { "name": "Skip" }
+      ]
+    },
+    {
+      "topic": "route",
+      "options": [
+        { "name": "Elite into campfire", "tags": ["elite", "campfire"] },
+        { "name": "Two hallways then shop", "tags": ["hallway", "shop"] },
+        { "name": "Safe question path", "tags": ["question", "campfire"] }
+      ]
+    },
+    {
+      "topic": "shop",
+      "options": [
+        { "name": "Card remove", "tags": ["remove"], "metadata": { "cost": 125 } },
+        { "name": "Fire Potion", "tags": ["potion"], "metadata": { "cost": 50 } },
+        { "name": "Cleave", "metadata": { "cost": 55 } }
+      ]
+    }
+  ]
+}

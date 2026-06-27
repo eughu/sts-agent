@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>STS Agent Panel</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="command-bar">
+        <div>
+          <p class="eyebrow">Slay the Spire Companion</p>
+          <h1>STS Agent Panel</h1>
+        </div>
+        <div class="status-pill" id="status">Connecting</div>
+      </section>
+
+      <section class="grid">
+        <aside class="run-column">
+          <section class="panel">
+            <div class="panel-title">
+              <span>Run State</span>
+              <span id="source">-</span>
+            </div>
+            <div class="stat-grid">
+              <div><span>角色</span><strong id="character">-</strong></div>
+              <div><span>幕 / 楼层</span><strong id="act-floor">-</strong></div>
+              <div><span>血量</span><strong id="hp">-</strong></div>
+              <div><span>金币</span><strong id="gold">-</strong></div>
+              <div><span>Boss</span><strong id="boss">-</strong></div>
+              <div><span>精英</span><strong id="elite">-</strong></div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-title">
+              <span>Run Profile</span>
+              <span id="risk">Risk -</span>
+            </div>
+            <div class="meter"><div id="risk-bar"></div></div>
+            <h2>Needs</h2>
+            <div class="chips" id="needs"></div>
+            <h2>Warnings</h2>
+            <ul class="plain-list" id="warnings"></ul>
+            <h2>Strengths</h2>
+            <div class="chips muted" id="strengths"></div>
+          </section>
+        </aside>
+
+        <section class="decision-column">
+          <div class="decision-header">
+            <div>
+              <p class="eyebrow">Live Recommendations</p>
+              <h2>Agent Decisions</h2>
+            </div>
+            <span id="updated">Waiting for state file</span>
+          </div>
+          <div id="decisions" class="decision-list"></div>
+        </section>
+      </section>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>

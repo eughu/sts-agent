@@ -55,6 +55,7 @@
 
    ```powershell
    sts-agent --help
+   sts-agent-web --help
    ```
 
 如果 PowerShell 禁止激活脚本，可以临时允许当前用户脚本：
@@ -64,6 +65,82 @@ Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 ```
 
 ## 使用示例
+
+## 本地 Web 面板
+
+Web 面板会读取一个本地 JSON 文件，并每 2 秒自动刷新建议。你可以先用示例文件跑起来：
+
+```powershell
+sts-agent-web --state .\examples\spire_state.json
+```
+
+打开浏览器：
+
+```text
+http://127.0.0.1:8765
+```
+
+如果你还没有状态文件，可以先把仓库里的示例格式复制成 `examples\spire_state.json`。JSON 结构如下：
+
+```json
+{
+  "state": {
+    "character": "ironclad",
+    "act": "act1",
+    "floor": 5,
+    "hp": 60,
+    "max_hp": 80,
+    "gold": 120,
+    "deck": ["Strike", "Strike", "Defend", "Bash", "Shrug It Off"],
+    "relics": ["Burning Blood"],
+    "potions": ["Fire Potion"],
+    "boss": "Slime Boss",
+    "next_elite": "Gremlin Nob",
+    "ascension": 10
+  },
+  "decisions": [
+    {
+      "topic": "card",
+      "options": [
+        { "name": "Cleave" },
+        { "name": "Demon Form" },
+        { "name": "Skip" }
+      ]
+    },
+    {
+      "topic": "route",
+      "options": [
+        { "name": "Elite into campfire", "tags": ["elite", "campfire"] },
+        { "name": "Two hallways then shop", "tags": ["hallway", "shop"] }
+      ]
+    }
+  ]
+}
+```
+
+支持的 `topic`：
+
+- `card`
+- `combat`
+- `relic`
+- `route`
+- `shop`
+
+每个 option 可以是简单字符串，也可以是对象：
+
+```json
+{ "name": "Card remove", "tags": ["remove"], "metadata": { "cost": 125 } }
+```
+
+### 自动化读取思路
+
+当前 Web 面板读取的是本地 JSON 文件。自动化时只要有任何工具持续改写这个文件，面板就会自动刷新：
+
+- 最稳路线：写 Slay the Spire Mod，把当前局面导出到 JSON。
+- 次稳路线：截图/OCR 工具识别画面后写入 JSON。
+- 手动路线：你自己编辑 JSON 或用小表单生成 JSON。
+
+核心 agent 不需要外接 API；外接 API 只适合做自然语言解释、复盘总结或更复杂的策略模型。
 
 ### 卡牌奖励
 

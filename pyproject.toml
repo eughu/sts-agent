@@ -17,7 +17,11 @@ dev = ["pytest>=8"]
 
 [project.scripts]
 sts-agent = "sts_agent.cli:main"
+sts-agent-web = "sts_agent.web_server:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["sts_agent*"]
+
+[tool.setuptools.package-data]
+sts_agent = ["web/static/*"]

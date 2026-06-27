@@ -1,5 +1,6 @@
 from sts_agent.coordinator import SpireCoordinator
 from sts_agent.models import Act, Candidate, Character, GameState
+from sts_agent.state_reader import evaluate_state_file
 
 
 def make_state(**overrides):
@@ -89,3 +90,12 @@ def test_boss_profile_pushes_slime_boss_aoe_pick():
     assert decision.best is not None
     assert decision.best.choice == "Cleave"
     assert "aoe" in decision.summary
+
+
+def test_state_reader_evaluates_json_file():
+    payload = evaluate_state_file("examples/spire_state.json")
+
+    assert payload["ok"] is True
+    assert payload["state"]["character"] == "ironclad"
+    assert payload["profile"]["needs"]
+    assert payload["decisions"][0]["best"] == "Cleave"
