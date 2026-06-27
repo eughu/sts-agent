@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from ..knowledge import deck_tags, normalize_name
 from ..models import Candidate, GameState, Recommendation
+from ..profile import analyze_run
 
 
 class RelicAgent:
@@ -11,6 +12,7 @@ class RelicAgent:
         self, state: GameState, options: tuple[Candidate, ...]
     ) -> tuple[Recommendation, ...]:
         tags_in_deck = deck_tags(state.deck)
+        profile = analyze_run(state)
         recommendations: list[Recommendation] = []
 
         for option in options:
@@ -35,6 +37,10 @@ class RelicAgent:
             if "defense" in tags or "block" in tags:
                 score += 7.0
                 reasons.append("defensive relics reduce HP pressure")
+            for need in profile.needs:
+                if need in tags:
+                    score += 8.0
+                    reasons.append(f"relic helps current need: {need}")
             if "shiv" in tags and "shiv" in tags_in_deck:
                 score += 14.0
                 reasons.append("relic aligns with shiv package")

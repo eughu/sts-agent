@@ -73,3 +73,19 @@ def test_combat_agent_prefers_lethal_line():
 
     assert decision.best is not None
     assert decision.best.choice == "Bash + Strike lethal"
+
+
+def test_boss_profile_pushes_slime_boss_aoe_pick():
+    decision = SpireCoordinator().decide(
+        "card",
+        make_state(boss="Slime Boss", deck=("Strike", "Strike", "Defend")),
+        (
+            Candidate("Cleave"),
+            Candidate("Demon Form"),
+            Candidate("Skip"),
+        ),
+    )
+
+    assert decision.best is not None
+    assert decision.best.choice == "Cleave"
+    assert "aoe" in decision.summary

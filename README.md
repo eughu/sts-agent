@@ -2,6 +2,8 @@
 
 一个给《杀戮尖塔 1》（Slay the Spire 1）准备的本地多子 agent 辅助器。它不会读取游戏内存、不会自动操作游戏，也不会替你作弊；你把当前局面和候选选项输入到命令行，它会用多个子 agent 给出可解释的建议，帮助你做通关决策。
 
+说人话：它不是“保证通关”的自动驾驶。杀戮尖塔有随机地图、随机奖励、敌人行动、抽牌顺序和大量边界局面，单靠一个短脚本不可能稳定替你赢。但这个项目的目标是做一个认真可扩展的爬塔参谋：它会诊断卡组缺口，结合 boss/精英威胁，给路径、卡牌、商店、遗物和战斗线排序。
+
 ## 子 agent 设计
 
 - `route-agent`：路径选择。根据血量、金币、楼层、精英、火堆、商店、问号和普通战斗来评分。
@@ -9,7 +11,23 @@
 - `card-choice-agent`：卡牌奖励选择。根据角色、当前幕数、卡组大小、前期输出、后期成长、格挡和抽牌需求来评分。
 - `relic-agent`：遗物选择。根据能量、抽牌、防御、角色机制和常见 boss 遗物风险来评分。
 - `shop-agent`：商店选择。根据金币、删牌、遗物、卡牌、药水、花费比例来评分。
+- `run-profile`：共享诊断器。分析当前卡组是否缺前期输出、AOE、格挡、抽牌、成长，以及低血量/高升阶风险。
 - `SpireCoordinator`：总控 agent。按主题调用对应子 agent，并输出排名、理由和风险提示。
+
+## 关键信息输入
+
+越多上下文，建议越准。常用输入包括：
+
+- `--character`：角色，支持 `ironclad`、`silent`、`defect`、`watcher`
+- `--act`：当前幕，支持 `act1` 到 `act4`
+- `--floor`：楼层
+- `--hp` / `--max-hp`：当前血量和最大血量
+- `--gold`：金币
+- `--deck`：当前卡组，逗号分隔
+- `--relics` / `--potions`：遗物和药水，逗号分隔
+- `--boss`：已知 boss，例如 `Slime Boss`、`Hexaghost`、`Guardian`
+- `--next-elite`：已知或推测的精英，例如 `Gremlin Nob`、`Sentries`、`Slavers`
+- `--ascension`：升阶等级
 
 ## Windows 安装
 
@@ -57,9 +75,11 @@ sts-agent card `
   --hp 60 `
   --max-hp 80 `
   --gold 120 `
+  --boss "Slime Boss" `
+  --ascension 10 `
   --deck "Strike,Strike,Defend,Shrug It Off" `
   --option "Demon Form" `
-  --option "Carnage" `
+  --option "Cleave" `
   --option "Skip"
 ```
 
@@ -79,6 +99,8 @@ sts-agent route `
   --hp 35 `
   --max-hp 70 `
   --gold 180 `
+  --boss "Hexaghost" `
+  --next-elite "Gremlin Nob" `
   --deck "Strike,Defend,Neutralize,Survivor,Blade Dance" `
   --option "Elite into campfire|elite,campfire" `
   --option "Two hallways then shop|hallway,shop" `
@@ -110,6 +132,7 @@ sts-agent shop `
   --hp 50 `
   --max-hp 72 `
   --gold 260 `
+  --boss "Collector" `
   --deck "Eruption,Vigilance,Strike,Defend,Tantrum,Rushdown" `
   --option "Card remove|remove|cost=125" `
   --option "Rushdown|draw,stance,scaling|cost=90" `
@@ -136,7 +159,7 @@ py -m pytest
 ## 当前局限
 
 - 这是启发式 agent，不是完美 AI，也不会读取游戏画面或存档。
-- 内置卡牌知识库覆盖常见强牌和机制，后续可以继续扩展。
+- 内置卡牌知识库覆盖常见强牌、机制、boss/精英威胁，后续可以继续扩展。
 - 建议用于辅助思考，最终仍要结合敌人、药水、boss、卡组具体循环来判断。
 
 ## 下一步可以扩展

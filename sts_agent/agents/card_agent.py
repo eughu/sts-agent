@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from ..knowledge import CHARACTER_PRIORITIES, card_tags, deck_tags, normalize_name
 from ..models import Candidate, GameState, Recommendation
+from ..profile import analyze_run
 
 
 class CardChoiceAgent:
@@ -11,6 +12,7 @@ class CardChoiceAgent:
         self, state: GameState, options: tuple[Candidate, ...]
     ) -> tuple[Recommendation, ...]:
         known_deck_tags = deck_tags(state.deck)
+        profile = analyze_run(state)
         recommendations: list[Recommendation] = []
 
         for option in options:
@@ -24,6 +26,11 @@ class CardChoiceAgent:
                 if tag in tags:
                     score += 9.0 * weight
                     reasons.append(f"{tag} fits {state.character.value}")
+
+            for need in profile.needs:
+                if need in tags:
+                    score += 11.0
+                    reasons.append(f"solves current run need: {need}")
 
             if state.act.value == "act1" and "frontload" in tags:
                 score += 14.0
@@ -60,6 +67,9 @@ class CardChoiceAgent:
                 if state.deck_size >= 24:
                     score += 10.0
                     reasons.append("large deck may prefer skipping filler")
+                if profile.risk >= 20:
+                    score -= 8.0
+                    cautions.append("run has unsolved needs; skipping is harder to justify")
                 cautions.append("skip only if rewards do not solve a real problem")
 
             recommendations.append(

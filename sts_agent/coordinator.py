@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from .agents import CardChoiceAgent, CombatAgent, RelicAgent, RouteAgent, ShopAgent
 from .models import Candidate, Decision, GameState
+from .profile import analyze_run
 
 
 class SpireCoordinator:
@@ -32,11 +33,20 @@ class SpireCoordinator:
 
         recommendations = self._agents[normalized].recommend(state, options)
         best = recommendations[0]
-        summary = self._build_summary(normalized, best.choice, best.score)
+        profile = analyze_run(state)
+        summary = self._build_summary(normalized, best.choice, best.score, profile.needs)
         return Decision(
             topic=normalized, recommendations=recommendations, summary=summary
         )
 
-    def _build_summary(self, topic: str, choice: str, score: float) -> str:
+    def _build_summary(
+        self, topic: str, choice: str, score: float, needs: tuple[str, ...]
+    ) -> str:
         confidence = "high" if score >= 75 else "medium" if score >= 58 else "low"
+        if needs:
+            need_text = ", ".join(needs[:4])
+            return (
+                f"For {topic}, prefer '{choice}' with {confidence} confidence. "
+                f"Current run needs: {need_text}."
+            )
         return f"For {topic}, prefer '{choice}' with {confidence} confidence."

@@ -30,6 +30,20 @@ COMMON_ATTACKS = {
     "sunder",
     "tantrum",
     "wild strike",
+    "ball lightning",
+    "backstab",
+    "bowling bash",
+    "conclude",
+    "cut through fate",
+    "dagger spray",
+    "die die die",
+    "empty body",
+    "melter",
+    "pommel strike",
+    "riddle with holes",
+    "signature move",
+    "sneaky strike",
+    "sword boomerang",
 }
 
 PREMIUM_BLOCK = {
@@ -112,6 +126,56 @@ CARD_TAGS: dict[str, set[str]] = {
     "vault": {"premium", "draw"},
     "wallop": {"attack", "block"},
     "wraith form": {"block", "scaling", "premium"},
+    "acrobatics": {"draw"},
+    "adrenaline": {"draw", "energy", "premium"},
+    "backflip": {"block", "draw"},
+    "backstab": {"attack", "frontload"},
+    "ball lightning": {"attack", "frontload", "orb"},
+    "bash": {"attack", "vulnerable"},
+    "body slam": {"attack", "block"},
+    "bowling bash": {"attack", "frontload"},
+    "burning pact": {"draw", "exhaust"},
+    "capacitor": {"scaling", "orb"},
+    "chill": {"block", "aoe", "orb"},
+    "cleave": {"attack", "aoe", "frontload"},
+    "cold snap": {"attack", "block", "orb"},
+    "conclude": {"attack", "aoe", "frontload"},
+    "coolheaded": {"block", "draw", "orb"},
+    "cut through fate": {"attack", "draw", "frontload"},
+    "dagger spray": {"attack", "aoe", "frontload"},
+    "dark embrace": {"draw", "scaling", "exhaust"},
+    "die die die": {"attack", "aoe", "frontload"},
+    "empty body": {"block", "stance"},
+    "empty mind": {"draw", "stance"},
+    "equilibrium": {"block", "retain"},
+    "evolve": {"draw", "status"},
+    "fission": {"draw", "energy", "orb"},
+    "fiend fire": {"attack", "frontload", "exhaust"},
+    "fire breathing": {"aoe", "scaling", "status"},
+    "flying knee": {"attack", "energy", "frontload"},
+    "ghostly armor": {"block"},
+    "hologram": {"block", "recursion"},
+    "inflame": {"scaling", "attack"},
+    "leg sweep": {"block", "weak"},
+    "melter": {"attack", "frontload"},
+    "offering": {"energy", "draw", "premium"},
+    "omnipotence": {"premium", "scaling"},
+    "phantasmal killer": {"scaling", "attack"},
+    "pommel strike": {"attack", "draw", "frontload"},
+    "power through": {"block", "status"},
+    "prostrate": {"block", "stance"},
+    "reaper": {"attack", "sustain"},
+    "reboot": {"draw", "premium"},
+    "seek": {"draw", "premium"},
+    "sentinel": {"block", "exhaust"},
+    "shockwave": {"block", "weak", "vulnerable", "premium"},
+    "signature move": {"attack", "frontload"},
+    "sneaky strike": {"attack", "frontload", "discard"},
+    "sweeping beam": {"attack", "aoe", "draw"},
+    "terror": {"scaling", "vulnerable"},
+    "true grit": {"block", "exhaust"},
+    "uppercut": {"attack", "weak", "vulnerable"},
+    "well-laid plans": {"retain", "scaling"},
 }
 
 CHARACTER_PRIORITIES: dict[Character, dict[str, float]] = {
@@ -145,6 +209,31 @@ CHARACTER_PRIORITIES: dict[Character, dict[str, float]] = {
     },
 }
 
+BOSS_NEEDS: dict[str, set[str]] = {
+    "guardian": {"block", "scaling"},
+    "hexaghost": {"frontload", "scaling"},
+    "slime boss": {"frontload", "aoe"},
+    "champ": {"scaling", "block"},
+    "collector": {"aoe", "scaling"},
+    "automaton": {"block", "scaling"},
+    "time eater": {"scaling", "block"},
+    "awakened one": {"frontload", "block"},
+    "donu deca": {"aoe", "scaling", "block"},
+    "heart": {"block", "scaling", "draw"},
+}
+
+ELITE_NEEDS: dict[str, set[str]] = {
+    "gremlin nob": {"frontload", "attack"},
+    "lagavulin": {"frontload", "scaling"},
+    "sentries": {"aoe", "block"},
+    "book of stabbing": {"block", "frontload"},
+    "slavers": {"aoe", "frontload"},
+    "gremlin leader": {"aoe", "frontload"},
+    "nemesis": {"block", "draw"},
+    "reptomancer": {"aoe", "frontload"},
+    "giant head": {"scaling"},
+}
+
 
 def normalize_name(name: str) -> str:
     return " ".join(name.lower().replace("+", "").split())
@@ -167,3 +256,10 @@ def deck_tags(deck: tuple[str, ...]) -> set[str]:
     for card in deck:
         result.update(card_tags(card))
     return result
+
+
+def threat_needs(name: str, table: dict[str, set[str]]) -> set[str]:
+    clean = normalize_name(name)
+    if not clean:
+        return set()
+    return set(table.get(clean, set()))

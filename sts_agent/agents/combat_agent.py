@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from ..knowledge import card_tags, normalize_name
 from ..models import Candidate, GameState, Recommendation
+from ..profile import analyze_run
 
 
 class CombatAgent:
@@ -10,6 +11,7 @@ class CombatAgent:
     def recommend(
         self, state: GameState, options: tuple[Candidate, ...]
     ) -> tuple[Recommendation, ...]:
+        profile = analyze_run(state)
         recommendations: list[Recommendation] = []
 
         for option in options:
@@ -36,9 +38,15 @@ class CombatAgent:
             if "scaling" in tags and incoming <= 8 and not lethal:
                 score += 12.0
                 reasons.append("safe turn to deploy scaling")
+            if "scaling" in tags and profile.needs_tag("scaling") and not lethal:
+                score += 7.0
+                reasons.append("fight plan needs scaling to close safely")
             if "attack" in tags and state.act.value == "act1":
                 score += 8.0
                 reasons.append("Act 1 fights reward ending fights quickly")
+            if "aoe" in tags and profile.needs_tag("aoe"):
+                score += 8.0
+                reasons.append("upcoming or current threat rewards area damage")
             if "draw" in tags:
                 score += 4.0
                 reasons.append("draw improves line flexibility")

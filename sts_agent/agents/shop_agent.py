@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from ..knowledge import card_tags, normalize_name
 from ..models import Candidate, GameState, Recommendation
+from ..profile import analyze_run
 
 
 class ShopAgent:
@@ -10,6 +11,7 @@ class ShopAgent:
     def recommend(
         self, state: GameState, options: tuple[Candidate, ...]
     ) -> tuple[Recommendation, ...]:
+        profile = analyze_run(state)
         recommendations: list[Recommendation] = []
 
         for option in options:
@@ -54,6 +56,10 @@ class ShopAgent:
             if "block" in tags or "attack" in tags or "scaling" in tags:
                 score += 7.0
                 reasons.append("card solves a recognizable deck role")
+            for need in profile.needs:
+                if need in tags:
+                    score += 10.0
+                    reasons.append(f"directly patches current need: {need}")
 
             if cost:
                 value_pressure = cost / max(state.gold, 1)

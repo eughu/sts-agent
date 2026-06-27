@@ -21,6 +21,9 @@ def main(argv: list[str] | None = None) -> int:
         deck=split_csv(args.deck),
         relics=split_csv(args.relics),
         potions=split_csv(args.potions),
+        boss=args.boss or "",
+        next_elite=args.next_elite or "",
+        ascension=args.ascension,
         notes=args.notes or "",
     )
     options = parse_options(args.option)
@@ -44,6 +47,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--deck", default="", help="Comma separated deck cards.")
     parser.add_argument("--relics", default="", help="Comma separated relics.")
     parser.add_argument("--potions", default="", help="Comma separated potions.")
+    parser.add_argument("--boss", default="", help="Known boss, for example 'Slime Boss'.")
+    parser.add_argument("--next-elite", default="", help="Known or suspected next elite.")
+    parser.add_argument("--ascension", type=int, default=0)
     parser.add_argument("--notes", default="")
     parser.add_argument(
         "--option",

@@ -30,6 +30,9 @@ class GameState:
     deck: tuple[str, ...] = ()
     relics: tuple[str, ...] = ()
     potions: tuple[str, ...] = ()
+    boss: str = ""
+    next_elite: str = ""
+    ascension: int = 0
     notes: str = ""
 
     @property
@@ -41,6 +44,10 @@ class GameState:
     @property
     def deck_size(self) -> int:
         return len(self.deck)
+
+    @property
+    def is_high_ascension(self) -> bool:
+        return self.ascension >= 15
 
 
 @dataclass(frozen=True)
